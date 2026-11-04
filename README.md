@@ -1,8 +1,10 @@
-# Fleet road coverage: where has the fleet driven?
+# Every street, or just the busy ones?
 
-A PySpark pipeline that takes raw GPS from a taxi fleet, cleans it, matches every fix to the
-OpenStreetMap road network, and measures which roads the fleet has driven, how often, and which
-it has never touched. The matching is validated on synthetic drives where the true route is known.
+Which roads has a fleet really driven? A PySpark pipeline that takes 39 million raw GPS fixes from
+Porto's taxi fleet, cleans them, matches each one to the OpenStreetMap road network, and measures
+which roads the fleet drives, how often, and which it never touches. The answer: every motorway, but
+only about half the residential streets with any regularity. The matching is validated on synthetic
+drives where the true route is known.
 
 ![Coverage map](docs/coverage.png)
 

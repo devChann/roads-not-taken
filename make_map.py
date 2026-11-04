@@ -24,7 +24,7 @@ d.plot(ax=ax, column="trips", cmap="plasma", norm=LogNorm(vmin=1, vmax=max(d.tri
        linewidth=np.clip(np.log10(d.trips + 1) * 0.6, 0.3, 2.2), legend=True,
        legend_kwds={"label": "trips that drove the segment (log scale)", "shrink": 0.6})
 km, km_d = g.length_m.sum() / 1000, g.length_m[g.trips > 0].sum() / 1000
-ax.set_title(f"Porto taxi fleet: {km_d:,.0f} of {km:,.0f} km of drivable road driven ({100 * km_d / km:.0f}%). "
+ax.set_title(f"Every street, or just the busy ones?\nPorto taxi fleet: {km_d:,.0f} of {km:,.0f} km of drivable road driven ({100 * km_d / km:.0f}%). "
              "Grey = never driven.", fontsize=11)
 ax.set_axis_off()
 (HERE / "docs").mkdir(exist_ok=True)

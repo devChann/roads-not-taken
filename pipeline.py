@@ -1,4 +1,4 @@
-"""Fleet road coverage: which roads has the fleet driven, how often, and what's missing?
+"""Every street, or just the busy ones? Which roads has the fleet driven, how often, and what is missing?
 
 PySpark pipeline over the Porto taxi dataset (442 taxis, 1.7 million trips, a GPS fix every 15 s):
   1. explode each trip's polyline into timestamped GPS fixes
