@@ -1,0 +1,182 @@
+{
+ "run": {
+  "trips_raw": 800488,
+  "trips_after_dedup": 800462,
+  "taxis": 439,
+  "first_trip_utc": "2013-07-01",
+  "last_trip_utc": "2013-12-19",
+  "seconds_read": 4.5,
+  "fixes_total": 38987770,
+  "fixes_outside_city": 1115706,
+  "fixes_kept": 37812877,
+  "fixes_dropped_as_jumps": 59187,
+  "seconds_explode_and_clean": 21.5,
+  "fixes_matched_to_a_road": 37359077,
+  "match_rate_pct": 98.8,
+  "seconds_match": 75.7,
+  "seconds_coverage": 89.1,
+  "road_km": 3030,
+  "road_km_driven": 2764,
+  "sample": 1.0,
+  "broadcast_join": true,
+  "road_km_driven_pct": 91.2
+ },
+ "join": {
+  "broadcast": {
+   "match_s": 54.2,
+   "total_s": 89.1
+  },
+  "shuffle": {
+   "match_s": 72.5,
+   "total_s": 107.2
+  },
+  "matched_fixes_both": true
+ },
+ "validation": {
+  "synthetic_trips": 1575,
+  "fixes": 28844,
+  "jumps_injected": 289,
+  "jumps_removed_pct": 92.7,
+  "good_fixes_wrongly_dropped_pct": 0.03,
+  "good_fixes_matched_pct": 99.9,
+  "match_exact_pct": 63.6,
+  "match_exact_or_adjacent_pct": 92.4,
+  "match_correct_street_pct": 95.7
+ },
+ "classes": [
+  {
+   "group": "m",
+   "km": 330.2,
+   "driven": 329.2,
+   "regular": 323.7
+  },
+  {
+   "group": "p",
+   "km": 201.6,
+   "driven": 195.9,
+   "regular": 193.3
+  },
+  {
+   "group": "s",
+   "km": 369.2,
+   "driven": 353.4,
+   "regular": 337.4
+  },
+  {
+   "group": "t",
+   "km": 336.8,
+   "driven": 325.2,
+   "regular": 290.6
+  },
+  {
+   "group": "r",
+   "km": 1631.6,
+   "driven": 1417.7,
+   "regular": 879.7
+  },
+  {
+   "group": "o",
+   "km": 161.0,
+   "driven": 143.0,
+   "regular": 101.4
+  }
+ ],
+ "hours": [
+  {
+   "hour": 0,
+   "count": 1157959
+  },
+  {
+   "hour": 1,
+   "count": 1017954
+  },
+  {
+   "hour": 2,
+   "count": 926000
+  },
+  {
+   "hour": 3,
+   "count": 887604
+  },
+  {
+   "hour": 4,
+   "count": 835438
+  },
+  {
+   "hour": 5,
+   "count": 813022
+  },
+  {
+   "hour": 6,
+   "count": 1036521
+  },
+  {
+   "hour": 7,
+   "count": 1015150
+  },
+  {
+   "hour": 8,
+   "count": 939447
+  },
+  {
+   "hour": 9,
+   "count": 951758
+  },
+  {
+   "hour": 10,
+   "count": 1384800
+  },
+  {
+   "hour": 11,
+   "count": 2048737
+  },
+  {
+   "hour": 12,
+   "count": 2244687
+  },
+  {
+   "hour": 13,
+   "count": 2174473
+  },
+  {
+   "hour": 14,
+   "count": 1984739
+  },
+  {
+   "hour": 15,
+   "count": 1873780
+  },
+  {
+   "hour": 16,
+   "count": 1971395
+  },
+  {
+   "hour": 17,
+   "count": 2217284
+  },
+  {
+   "hour": 18,
+   "count": 2235229
+  },
+  {
+   "hour": 19,
+   "count": 2315300
+  },
+  {
+   "hour": 20,
+   "count": 2253011
+  },
+  {
+   "hour": 21,
+   "count": 2030133
+  },
+  {
+   "hour": 22,
+   "count": 1653069
+  },
+  {
+   "hour": 23,
+   "count": 1391587
+  }
+ ]
+}
