@@ -8,6 +8,8 @@ OpenStreetMap road network, and measures which roads the fleet drives, how often
 touches. The answer: every motorway, but only about half the residential streets with any regularity.
 The matching is validated on synthetic drives where the true route is known.
 
+**Explore the map: [devchann.github.io/roads-not-taken](https://devchann.github.io/roads-not-taken/)**
+
 ![Coverage map](docs/coverage.png)
 
 ## Results
@@ -107,6 +109,7 @@ python -m venv .venv && .venv/bin/pip install pyspark==3.5.3 pyarrow==18.1.0 pan
 ```
 
 Files: `prepare_roads.py` (OpenStreetMap download and H3 road index), `pipeline.py` (the Spark job),
-`validate.py` (synthetic drives and scoring), `make_map.py` (the map).
+`validate.py` (synthetic drives and scoring), `make_map.py` (the static map), `export_web.py` and `docs/`
+(the interactive map page, MapLibre GL, served by GitHub Pages).
 
 Author: Chann Isaac · [GitHub](https://github.com/devChann) · [LinkedIn](https://www.linkedin.com/in/chann-isaac-19b403145/)

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The roads not taken</title>
+<meta name="description" content="Which roads has a fleet really driven? 39 million taxi GPS fixes matched to OpenStreetMap with PySpark, and the gaps a data-collection fleet should drive next.">
+<meta property="og:title" content="The roads not taken 🚕🛣️">
+<meta property="og:description" content="Porto's taxi fleet drives every motorway, but only about half its residential streets with any regularity. 39 million GPS fixes, PySpark, H3, OpenStreetMap.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://devchann.github.io/roads-not-taken/">
+<meta property="og:image" content="https://devchann.github.io/roads-not-taken/coverage.png">
+<meta name="author" content="Chann Isaac">
+<link rel="canonical" href="https://devchann.github.io/roads-not-taken/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="page">
+
+  <header class="hero">
+    <i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i><i class="blob b4"></i><i class="blob b5"></i>
+    <p class="kicker"><span>🚕 439 taxis</span><span>🧭 800,462 trips</span><span>📍 Porto, July–December 2013</span></p>
+    <h1>The roads <span class="grad">not taken</span></h1>
+    <p class="lede">Which roads has a fleet really driven? 39 million taxi GPS fixes matched to OpenStreetMap with PySpark,
+      and the gaps a data-collection fleet should drive next. The answer: <b>every motorway, but only about half the
+      residential streets with any regularity.</b> The blue lines on the map are the streets no taxi drove in six months.</p>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <section class="explorer" aria-label="Coverage map">
+    <aside class="side">
+      <div class="group">
+        <span class="label">Show</span>
+        <div class="chips" id="modes"></div>
+      </div>
+      <div class="group">
+        <span class="label">Road classes</span>
+        <div class="chips" id="classes"></div>
+      </div>
+      <div class="group">
+        <span class="label">Trips that drove the segment</span>
+        <div class="ramp"></div>
+        <div class="rampkeys"><span>1</span><span>10</span><span>100</span><span>1,000</span><span>10,000+</span></div>
+        <div class="gapkey"><i></i>never driven</div>
+      </div>
+      <div class="shown" id="shown"></div>
+      <div class="info" id="info" hidden></div>
+      <div class="group">
+        <span class="label">Longest never-driven streets</span>
+        <ol class="longest" id="longest"></ol>
+      </div>
+    </aside>
+    <div class="stage">
+      <div id="map" role="img" aria-label="Map of Porto's roads coloured by how many taxi trips drove each segment"></div>
+      <div class="loading" id="loading">Loading 31,813 road segments…</div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="band-head">
+      <h2>Every motorway, half the residential streets</h2>
+      <p>Share of each road class the fleet drove at least once, and at least ten times. Taxis follow demand, so main
+        roads saturate quickly while residential streets stay patchy. That's the gap a dedicated data-collection fleet
+        would have to drive on purpose.</p>
+    </div>
+    <div class="card">
+      <div class="bars" id="classbars"></div>
+      <div class="keys"><span><i class="sw" style="background:#e8336d"></i>driven 10+ times</span>
+        <span><i class="sw" style="background:#ffb38a"></i>driven 1–9 times</span>
+        <span><i class="sw" style="background:var(--gap)"></i>never driven</span></div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="band-head">
+      <h2>How it works</h2>
+      <p>One PySpark job, from raw trips to coverage, in about a minute and a half on a 12-core laptop.</p>
+    </div>
+    <ol class="steps">
+      <li><span class="ic">🧾</span><b>Trips into GPS fixes</b><span>Each trip is one row with its route as a JSON list of points every 15 s. <code>from_json</code> + <code>posexplode</code> turns 800k trips into 39M timestamped fixes across all cores.</span></li>
+      <li><span class="ic">🧹</span><b>Cleaning</b><span>Duplicate trips dropped. Fixes outside the city removed. A <i>spike</i> (jumps away and straight back at an impossible speed) is removed with a window over each trip, which <b>shuffles</b> the data by trip.</span></li>
+      <li><span class="ic">🔷</span><b>Matching without a geometric search</b><span>Roads are pre-indexed on the H3 grid (cells about 9 m across). Every fix gets its cell, so matching is an <b>equality join</b>. A continuity step fixes single odd matches between two fixes on the same road.</span></li>
+      <li><span class="ic">📊</span><b>Coverage</b><span>Per segment: trips, taxis, days, first and last seen. Per road class: kilometres driven once and driven regularly.</span></li>
+    </ol>
+  </section>
+
+  <section class="band">
+    <div class="grid2">
+      <figure class="card violet">
+        <h3>⚡ Two joins, same answer</h3>
+        <p class="sub">The road index is small, so Spark can copy it to every executor (broadcast) instead of shuffling
+          39 million fixes and the road table by cell ID. Same 37,359,077 matches either way; the matching stage is about a quarter faster.</p>
+        <div class="race" id="race"></div>
+      </figure>
+      <figure class="card mint">
+        <h3>🎯 A test where the answer is known</h3>
+        <p class="sub">Real taxis have no ground truth, so the same pipeline runs on synthetic drives along real Porto
+          roads with GPS noise and injected jumps, where the true route is known.</p>
+        <table class="t" id="valtable"></table>
+      </figure>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="grid2">
+      <div class="card yellow"><h3>🚧 Limits</h3><ul class="plain">
+        <li>This run covers the first 800,488 trips of the year-long dataset, July to December 2013.</li>
+        <li>Matching picks the nearest road with a continuity check: 96% of fixes land on the correct street, but only 64% on the exact segment, mostly at junctions and divided roads.</li>
+        <li>Validation uses synthetic drives, which show how the method behaves, not how real drivers do.</li>
+        <li>Taxis follow passengers, not a survey plan, so "never driven" here means "never driven by this fleet".</li>
+      </ul></div>
+      <div class="card blue"><h3>🛣️ Next</h3><ul class="plain">
+        <li><b>Hidden Markov map matching</b> (Newson and Krumm, 2009) with heading and one-way rules, scored on the same synthetic set.</li>
+        <li><b>Where to drive next:</b> routes over the road graph that cover the most never-driven kilometres.</li>
+        <li>The full year, coverage by time of day, and the same job on Databricks with Delta tables.</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p>Data: Porto taxi trajectories (ECML/PKDD 2015 challenge, UCI Machine Learning Repository). Roads and base map © OpenStreetMap contributors; tiles by OpenFreeMap.</p>
+    <p>Made with 🗺️ and a lot of GPS noise by <a href="https://www.linkedin.com/in/chann-isaac-19b403145/">Chann Isaac</a> · <a href="https://github.com/devChann/roads-not-taken">code on GitHub</a> · also: <a href="https://devchann.github.io/together-or-nearby/">Together, or just nearby?</a></p>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
